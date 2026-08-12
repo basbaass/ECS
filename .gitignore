@@ -30,3 +30,10 @@ go.work.sum
 # Editor/IDE
 # .idea/
 # .vscode/
+
+# Local cache 
+.terraform/
+
+# variable files
+*.tfvars
+*.tfvars.json
