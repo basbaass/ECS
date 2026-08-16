@@ -32,8 +32,13 @@ go.work.sum
 # .vscode/
 
 # Local cache 
-.terraform/
-
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
 # variable files
 *.tfvars
 *.tfvars.json
+
+
+
