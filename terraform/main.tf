@@ -1,6 +1,9 @@
 resource "aws_s3_bucket" "terraform_state" {
   bucket = "ecs-v1-gatus-state-s3"
 
+  lifecycle {
+    prevent_destroy = true
+  }
   tags = {
     Name        = "gatus-v1-tfstate"
     Project     = "gatus"
