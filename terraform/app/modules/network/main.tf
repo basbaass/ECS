@@ -1,9 +1,9 @@
 #VPC
 resource "aws_vpc" "main" {
   cidr_block = "10.0.0.0/16"
-    tags = {
-      Project = "gatus"
-    }
+  tags = {
+    Project = "gatus"
+  }
 }
 ##IGW
 resource "aws_internet_gateway" "igw" {
@@ -42,7 +42,7 @@ resource "aws_subnet" "subnet_c" {
   vpc_id     = aws_vpc.main.id
   cidr_block = "10.0.3.0/24"
 
-  availability_zone = variable.availability_zone_a
+  availability_zone = var.availability_zones[0]
 
   tags = {
     Project = "gatus"
@@ -53,7 +53,7 @@ resource "aws_subnet" "subnet_d" {
   vpc_id     = aws_vpc.main.id
   cidr_block = "10.0.4.0/24"
 
-  availability_zone = variable.availability_zone_b    
+  availability_zone = var.availability_zones[1]
 
   tags = {
     Project = "gatus"
@@ -64,15 +64,15 @@ resource "aws_subnet" "subnet_d" {
 #EIP A
 
 resource "aws_eip" "nat_a" {
-  domain = "vpc"
-  depends_on = [ aws_internet_gateway.igw ]
+  domain     = "vpc"
+  depends_on = [aws_internet_gateway.igw]
 }
 
 #EIP B
 
 resource "aws_eip" "nat_b" {
-  domain = "vpc"
-  depends_on = [ aws_internet_gateway.igw ]
+  domain     = "vpc"
+  depends_on = [aws_internet_gateway.igw]
 }
 
 #NAT A
@@ -119,30 +119,30 @@ resource "aws_route_table" "public_route" {
 #Private route table C
 
 resource "aws_route_table" "private_a" {
-    vpc_id = aws_vpc.main.id
+  vpc_id = aws_vpc.main.id
 
-    route {
-        cidr_block = "0.0.0.0/0"
-        nat_gateway_id = aws_nat_gateway.nat_a.id
-    }
-   
-    tags = {
-        Project = "gatus"
-    }
+  route {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.nat_a.id
+  }
+
+  tags = {
+    Project = "gatus"
+  }
 }
 
 #Private route table D
 resource "aws_route_table" "private_b" {
-    vpc_id = aws_vpc.main.id
+  vpc_id = aws_vpc.main.id
 
-    route {
-        cidr_block = "0.0.0.0/0"
-        nat_gateway_id = aws_nat_gateway.nat_b.id
-    }
+  route {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.nat_b.id
+  }
 
-    tags = {
-        Project = "gatus"
-    }
+  tags = {
+    Project = "gatus"
+  }
 }
 
 #Route table association A
