@@ -1,3 +1,8 @@
+locals {
+  container_name = "gatus"
+  container_port = 8080
+}
+
 #IAM
 
 data "aws_iam_policy_document" "trust_policy" {
@@ -55,12 +60,12 @@ resource "aws_ecs_task_definition" "gatus" {
   memory                   = 512
   execution_role_arn       = aws_iam_role.ecs_execution_role.arn
   container_definitions = jsonencode([{
-    image     = "TBC"
-    name      = "gatus"
+    image     = var.gatus_image
+    name      = local.container_name
     essential = true
     portMappings = [
       {
-        containerPort = 8080
+        containerPort = local.container_port
       }
     ]
     logConfiguration = {
@@ -73,6 +78,35 @@ resource "aws_ecs_task_definition" "gatus" {
     }
   }])
 
+  tags = {
+    Project = "gatus"
+  }
+
 }
 
 #ECS Service
+
+resource "aws_ecs_service" "gatus" {
+  name            = "gatus"
+  cluster         = aws_ecs_cluster.gatus.arn
+  task_definition = aws_ecs_task_definition.gatus.arn
+  desired_count   = 2
+  depends_on      = [aws_iam_role_policy_attachment.ecs_execution_policy]
+  launch_type     = "FARGATE"
+
+  load_balancer {
+    target_group_arn = var.target_group_arn
+    container_name   = local.container_name
+    container_port   = local.container_port
+  }
+
+  network_configuration {
+    assign_public_ip = false
+    security_groups  = [var.ecs_security_group_id]
+    subnets          = var.private_subnet_ids
+  }
+
+  tags = {
+    Project = "gatus"
+  }
+}
