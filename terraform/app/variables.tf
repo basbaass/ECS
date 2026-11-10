@@ -11,3 +11,7 @@ variable "availability_zones" {
 variable "domain_name" {
   description = "Domain name for app (ACM)"
 }
+
+variable "image_tag" {
+  description = "Tag for docker image"
+}
