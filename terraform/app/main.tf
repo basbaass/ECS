@@ -23,7 +23,7 @@ module "ecs" {
   target_group_arn      = module.alb.target_group_arn
   private_subnet_ids    = module.network.private_subnet_ids
   ecs_security_group_id = module.security.ecs_security_group_id
-  gatus_image           = data.aws_ecr_image.gatus.id
+  gatus_image           = data.aws_ecr_image.gatus.image_uri
 
 }
 
