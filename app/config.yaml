@@ -1,0 +1,65 @@
+# Gatus config
+
+ui:
+  title: "fhersi.dev | Platform Status"
+  header: "Platform Status"
+  dashboard-heading: "Platform Status"
+  dashboard-subheading: "Live infrastructure and dependency monitoring"
+
+endpoints:
+  #Platform
+  - name: status-page
+    group: platform
+    url: "https://status.platform.fhersi.dev/health"
+    interval: 5m
+    conditions:
+      - "[STATUS] == 200"
+      - "[BODY].status == UP"
+      - "[CERTIFICATE_EXPIRATION] > 720h"
+
+  - name: fhersi-dev-domain
+    group: platform
+    url: "https://fhersi.dev"
+    interval: 12h
+    conditions:
+      - "[DOMAIN_EXPIRATION] > 720h"
+
+  #Dependencies
+  - name: github-api
+    group: dependencies
+    url: "https://api.github.com"
+    interval: 5m
+    conditions:
+      - "[STATUS] == 200"
+      - "[BODY].rate_limit_url == https://api.github.com/rate_limit"
+      - "[RESPONSE_TIME] < 1000"
+
+  - name: github-actions-oidc
+    group: dependencies
+    url: "https://token.actions.githubusercontent.com/.well-known/openid-configuration"
+    interval: 5m
+    conditions:
+      - "[STATUS] == 200"
+      - "[BODY].issuer == https://token.actions.githubusercontent.com"
+
+  - name: aws-ecr-eu-west-2
+    group: dependencies
+    url: "https://api.ecr.eu-west-2.amazonaws.com"
+    interval: 5m
+    conditions:
+      - "[CONNECTED] == true"
+      - "[CERTIFICATE_EXPIRATION] > 168h"
+
+  - name: aws-sts-eu-west-2
+    group: dependencies
+    url: "https://sts.eu-west-2.amazonaws.com"
+    interval: 5m
+    conditions:
+      - "[CONNECTED] == true"
+
+  - name: cloudflare-ping
+    group: external
+    url: "icmp://1.1.1.1"
+    interval: 1m
+    conditions:
+      - "[CONNECTED] == true"
