@@ -35,10 +35,12 @@ go.work.sum
 **/.terraform/*
 *.tfstate
 *.tfstate.*
-.terraform.lock.hcl
 # variable files
 *.tfvars
 *.tfvars.json
+
+# config
+/app/config-from-container.yaml
 
 
 
